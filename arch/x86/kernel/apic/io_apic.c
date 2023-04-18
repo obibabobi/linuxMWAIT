@@ -673,11 +673,24 @@ int restore_ioapic_entries(void)
 	return 0;
 }
 
-void setup_ioapic_for_measurement(void) {
+void setup_ioapic_for_measurement(unsigned destination) {
 	printk("Hello from ioapic setup function!\n");
 
 	save_ioapic_entries();
 	mask_ioapic_entries();
+
+	struct IO_APIC_route_entry entry;
+	entry = ioapic_read_entry(0, 2);
+	printk("L: %x H: %x\n", entry.w1, entry.w2);
+
+	struct IO_APIC_route_entry new_entry;
+	new_entry.w1 = 0xC30;
+	new_entry.w2 = entry.w2;
+	ioapic_write_entry(0, 2, new_entry);
+
+	entry = ioapic_read_entry(0, 2);
+	printk("After write: L: %x H: %x\n", entry.w1, entry.w2);
+
 }
 EXPORT_SYMBOL(setup_ioapic_for_measurement);
 

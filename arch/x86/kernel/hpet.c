@@ -187,13 +187,26 @@ void hpet_print_config_func(void) {
 }
 EXPORT_SYMBOL(hpet_print_config_func);
 
+static unsigned int old_cfg;
+
 void setup_hpet_for_measurement(void) {
 	printk("Hello from hpet setup function!\n");
+
+	old_cfg = hpet_readl(HPET_Tn_CFG(2));
+
+	unsigned int cfg = 0x434;
+	hpet_writel(cfg, HPET_Tn_CFG(2));
+
+	u32 period = hpet_readl(HPET_PERIOD);
+	u64 counter = readq(hpet_virt_address + HPET_COUNTER);
+	writeq(counter + 10000000, hpet_virt_address + HPET_Tn_CMP(2));
 }
 EXPORT_SYMBOL(setup_hpet_for_measurement);
 
 void restore_hpet_after_measurement(void) {
 	printk("Hello from hpet restore function!\n");
+
+	hpet_writel(old_cfg, HPET_Tn_CFG(2));
 }
 EXPORT_SYMBOL(restore_hpet_after_measurement);
 
