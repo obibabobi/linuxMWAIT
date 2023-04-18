@@ -631,7 +631,6 @@ int save_ioapic_entries(void)
 
 	return err;
 }
-EXPORT_SYMBOL(save_ioapic_entries);
 
 /*
  * Mask all IO APIC entries.
@@ -655,7 +654,6 @@ void mask_ioapic_entries(void)
 		}
 	}
 }
-EXPORT_SYMBOL(mask_ioapic_entries);
 
 /*
  * Restore IO APIC entries which was saved in the ioapic structure.
@@ -674,7 +672,21 @@ int restore_ioapic_entries(void)
 	}
 	return 0;
 }
-EXPORT_SYMBOL(restore_ioapic_entries);
+
+void setup_ioapic_for_measurement(void) {
+	printk("Hello from ioapic setup function!\n");
+
+	save_ioapic_entries();
+	mask_ioapic_entries();
+}
+EXPORT_SYMBOL(setup_ioapic_for_measurement);
+
+void restore_ioapic_after_measurement(void) {
+	printk("Hello from ioapic restore function!\n");
+
+	restore_ioapic_entries();
+}
+EXPORT_SYMBOL(restore_ioapic_after_measurement);
 
 /*
  * Find the IRQ entry number of a certain pin.

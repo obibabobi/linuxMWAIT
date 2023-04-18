@@ -179,6 +179,24 @@ do {								\
 		_hpet_print_config(__func__, __LINE__);	\
 } while (0)
 
+void hpet_print_config_func(void) {
+	bool verbose = hpet_verbose;
+	hpet_verbose = 1;
+	hpet_print_config();
+	hpet_verbose = verbose;
+}
+EXPORT_SYMBOL(hpet_print_config_func);
+
+void setup_hpet_for_measurement(void) {
+	printk("Hello from hpet setup function!\n");
+}
+EXPORT_SYMBOL(setup_hpet_for_measurement);
+
+void restore_hpet_after_measurement(void) {
+	printk("Hello from hpet restore function!\n");
+}
+EXPORT_SYMBOL(restore_hpet_after_measurement);
+
 /*
  * When the HPET driver (/dev/hpet) is enabled, we need to reserve
  * timer 0 and timer 1 in case of RTC emulation.

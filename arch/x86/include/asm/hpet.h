@@ -73,6 +73,9 @@ extern int hpet_enable(void);
 extern void hpet_disable(void);
 extern unsigned int hpet_readl(unsigned int a);
 extern void force_hpet_resume(void);
+extern void hpet_print_config_func(void);
+extern void setup_hpet_for_measurement(void);
+extern void restore_hpet_after_measurement(void);
 
 #ifdef CONFIG_HPET_EMULATE_RTC
 
