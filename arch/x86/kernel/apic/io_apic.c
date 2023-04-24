@@ -684,8 +684,9 @@ void setup_ioapic_for_measurement(unsigned destination) {
 	printk("L: %x H: %x\n", entry.w1, entry.w2);
 
 	struct IO_APIC_route_entry new_entry;
-	new_entry.w1 = 0xC30;
-	new_entry.w2 = entry.w2;
+	new_entry.w1 = 0x402;
+	new_entry.w2 = 0;
+	new_entry.destid_0_7 = destination;
 	ioapic_write_entry(0, 2, new_entry);
 
 	entry = ioapic_read_entry(0, 2);
