@@ -187,14 +187,29 @@ void hpet_print_config_func(void) {
 }
 EXPORT_SYMBOL(hpet_print_config_func);
 
+int select_hpet_pin(void){
+	unsigned route_cap = hpet_readl(HPET_Tn_CFG(2)+4);
+	int pin = 0;
+	while(!(route_cap%2) && pin < 32) {
+		route_cap >>= 1;
+		++pin;
+	}
+	if(pin == 32) {
+		return -1;
+	}
+	return pin;
+}
+EXPORT_SYMBOL(select_hpet_pin);
+
 static unsigned int old_cfg;
 
-void setup_hpet_for_measurement(int duration) {
+void setup_hpet_for_measurement(int duration, int pin) {
 	printk("Hello from hpet setup function!\n");
 
 	old_cfg = hpet_readl(HPET_Tn_CFG(2));
 
-	unsigned int cfg = 0x434;
+	unsigned cfg = 0x34;
+	cfg += pin << 9;
 	hpet_writel(cfg, HPET_Tn_CFG(2));
 
 	u32 period = hpet_readl(HPET_PERIOD);

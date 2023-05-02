@@ -74,8 +74,9 @@ extern void hpet_disable(void);
 extern unsigned int hpet_readl(unsigned int a);
 extern void force_hpet_resume(void);
 extern void hpet_print_config_func(void);
+extern int select_hpet_pin(void);
 // duration in milliseconds
-extern void setup_hpet_for_measurement(int duration);
+extern void setup_hpet_for_measurement(int duration, int pin);
 extern void restore_hpet_after_measurement(void);
 
 #ifdef CONFIG_HPET_EMULATE_RTC
