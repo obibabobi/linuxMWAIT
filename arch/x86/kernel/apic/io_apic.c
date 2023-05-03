@@ -682,6 +682,7 @@ void setup_ioapic_for_measurement(unsigned destination, int pin) {
 	struct IO_APIC_route_entry entry;
 	entry = ioapic_read_entry(0, pin);
 	printk("L: %x H: %x\n", entry.w1, entry.w2);
+	printk("Number IOAPICs: %i\n", nr_ioapics);
 
 	struct IO_APIC_route_entry new_entry;
 	new_entry.w1 = 0x402;
