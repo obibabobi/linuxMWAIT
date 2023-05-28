@@ -673,32 +673,25 @@ int restore_ioapic_entries(void)
 	return 0;
 }
 
-void setup_ioapic_for_measurement(unsigned destination, int pin) {
-	printk("Hello from ioapic setup function!\n");
+void setup_ioapic_for_measurement(unsigned destination, int pin)
+{
+	struct IO_APIC_route_entry new_entry;
 
 	save_ioapic_entries();
 	mask_ioapic_entries();
 
-	struct IO_APIC_route_entry entry;
-	entry = ioapic_read_entry(0, pin);
-	printk("L: %x H: %x\n", entry.w1, entry.w2);
-	printk("Number IOAPICs: %i\n", nr_ioapics);
+	if(nr_ioapics > 1)
+		printk(KERN_ERR "WARNING: More than 1 IOAPIC!\n");
 
-	struct IO_APIC_route_entry new_entry;
 	new_entry.w1 = 0x402;
 	new_entry.w2 = 0;
 	new_entry.destid_0_7 = destination;
 	ioapic_write_entry(0, pin, new_entry);
-
-	entry = ioapic_read_entry(0, pin);
-	printk("After write: L: %x H: %x\n", entry.w1, entry.w2);
-
 }
 EXPORT_SYMBOL(setup_ioapic_for_measurement);
 
-void restore_ioapic_after_measurement(void) {
-	printk("Hello from ioapic restore function!\n");
-
+void restore_ioapic_after_measurement(void)
+{
 	restore_ioapic_entries();
 }
 EXPORT_SYMBOL(restore_ioapic_after_measurement);

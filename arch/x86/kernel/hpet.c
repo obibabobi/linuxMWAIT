@@ -179,7 +179,8 @@ do {								\
 		_hpet_print_config(__func__, __LINE__);	\
 } while (0)
 
-void hpet_print_config_func(void) {
+void hpet_print_config_func(void) 
+{
 	bool verbose = hpet_verbose;
 	hpet_verbose = 1;
 	hpet_print_config();
@@ -187,8 +188,9 @@ void hpet_print_config_func(void) {
 }
 EXPORT_SYMBOL(hpet_print_config_func);
 
-int select_hpet_pin(void){
-	unsigned route_cap = hpet_readl(HPET_Tn_CFG(2)+4);
+int select_hpet_pin(void)
+{
+	u32 route_cap = hpet_readl(HPET_Tn_CFG(2)+4);
 	int pin = 0;
 	while(!(route_cap%2) && pin < 32) {
 		route_cap >>= 1;
@@ -201,27 +203,28 @@ int select_hpet_pin(void){
 }
 EXPORT_SYMBOL(select_hpet_pin);
 
-static unsigned int old_cfg;
+static u32 old_cfg;
 
-void setup_hpet_for_measurement(int duration, int pin) {
-	printk("Hello from hpet setup function!\n");
+void setup_hpet_for_measurement(int duration, int pin)
+{
+	u32 cfg, period;
+	u64 ticks, counter;
 
 	old_cfg = hpet_readl(HPET_Tn_CFG(2));
 
-	unsigned cfg = 0x34;
+	cfg = 0x34;
 	cfg += pin << 9;
 	hpet_writel(cfg, HPET_Tn_CFG(2));
 
-	u32 period = hpet_readl(HPET_PERIOD);
-	u64 ticks = (duration * 1000000000000) / period;
-	u64 counter = readq(hpet_virt_address + HPET_COUNTER);
+	period = hpet_readl(HPET_PERIOD);
+	ticks = (duration * 1000000000000) / period;
+	counter = readq(hpet_virt_address + HPET_COUNTER);
 	writeq(counter + ticks, hpet_virt_address + HPET_Tn_CMP(2));
 }
 EXPORT_SYMBOL(setup_hpet_for_measurement);
 
-void restore_hpet_after_measurement(void) {
-	printk("Hello from hpet restore function!\n");
-
+void restore_hpet_after_measurement(void)
+{
 	hpet_writel(old_cfg, HPET_Tn_CFG(2));
 }
 EXPORT_SYMBOL(restore_hpet_after_measurement);
