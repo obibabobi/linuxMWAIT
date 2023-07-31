@@ -6,6 +6,7 @@
 #include <linux/hpet.h>
 #include <linux/cpu.h>
 #include <linux/irq.h>
+#include <linux/sched/clock.h>
 
 #include <asm/irq_remapping.h>
 #include <asm/hpet.h>
@@ -205,10 +206,10 @@ EXPORT_SYMBOL(select_hpet_pin);
 
 static u32 old_cfg;
 
-void setup_hpet_for_measurement(int duration, int pin)
+u64 setup_hpet_for_measurement(int duration, int pin)
 {
 	u32 cfg, period;
-	u64 ticks, counter;
+	u64 ticks, counter, timestamp;
 
 	old_cfg = hpet_readl(HPET_Tn_CFG(2));
 
@@ -218,8 +219,13 @@ void setup_hpet_for_measurement(int duration, int pin)
 
 	period = hpet_readl(HPET_PERIOD);
 	ticks = (duration * 1000000000000) / period;
+
+	timestamp = local_clock();
+
 	counter = readq(hpet_virt_address + HPET_COUNTER);
 	writeq(counter + ticks, hpet_virt_address + HPET_Tn_CMP(2));
+
+	return timestamp;
 }
 EXPORT_SYMBOL(setup_hpet_for_measurement);
 
