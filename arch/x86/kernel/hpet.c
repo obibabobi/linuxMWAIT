@@ -189,6 +189,16 @@ void hpet_print_config_func(void)
 }
 EXPORT_SYMBOL(hpet_print_config_func);
 
+u32 get_hpet_period(void){
+	return hpet_readl(HPET_PERIOD);
+}
+EXPORT_SYMBOL(get_hpet_period);
+
+u64 get_hpet_counter(void){
+	return readq(hpet_virt_address + HPET_COUNTER);;
+}
+EXPORT_SYMBOL(get_hpet_counter);
+
 int select_hpet_pin(void)
 {
 	u32 route_cap = hpet_readl(HPET_Tn_CFG(2)+4);
@@ -209,7 +219,7 @@ static u32 old_cfg;
 u64 setup_hpet_for_measurement(int duration, int pin)
 {
 	u32 cfg, period;
-	u64 ticks, counter, timestamp;
+	u64 ticks, counter, comparator;
 
 	old_cfg = hpet_readl(HPET_Tn_CFG(2));
 
@@ -220,12 +230,11 @@ u64 setup_hpet_for_measurement(int duration, int pin)
 	period = hpet_readl(HPET_PERIOD);
 	ticks = (duration * 1000000000000) / period;
 
-	timestamp = local_clock();
-
 	counter = readq(hpet_virt_address + HPET_COUNTER);
-	writeq(counter + ticks, hpet_virt_address + HPET_Tn_CMP(2));
+	comparator = counter + ticks;
+	writeq(comparator, hpet_virt_address + HPET_Tn_CMP(2));
 
-	return timestamp;
+	return comparator;
 }
 EXPORT_SYMBOL(setup_hpet_for_measurement);
 

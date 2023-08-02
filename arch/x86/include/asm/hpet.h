@@ -78,6 +78,8 @@ extern int select_hpet_pin(void);
 // duration in milliseconds
 extern u64 setup_hpet_for_measurement(int duration, int pin);
 extern void restore_hpet_after_measurement(void);
+extern u32 get_hpet_period(void);
+extern u64 get_hpet_counter(void);
 
 #ifdef CONFIG_HPET_EMULATE_RTC
 
