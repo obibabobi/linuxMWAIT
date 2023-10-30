@@ -180,7 +180,7 @@ do {								\
 		_hpet_print_config(__func__, __LINE__);	\
 } while (0)
 
-void hpet_print_config_func(void) 
+void hpet_print_config_func(void)
 {
 	bool verbose = hpet_verbose;
 	hpet_verbose = 1;
@@ -189,13 +189,15 @@ void hpet_print_config_func(void)
 }
 EXPORT_SYMBOL(hpet_print_config_func);
 
-u32 get_hpet_period(void){
+u32 get_hpet_period(void)
+{
 	return hpet_readl(HPET_PERIOD);
 }
 EXPORT_SYMBOL(get_hpet_period);
 
-u64 get_hpet_counter(void){
-	return readq(hpet_virt_address + HPET_COUNTER);;
+u64 get_hpet_counter(void)
+{
+	return readq(hpet_virt_address + HPET_COUNTER);
 }
 EXPORT_SYMBOL(get_hpet_counter);
 
