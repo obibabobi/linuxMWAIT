@@ -680,9 +680,6 @@ void setup_ioapic_for_measurement(unsigned destination, int pin)
 	save_ioapic_entries();
 	mask_ioapic_entries();
 
-	if(nr_ioapics > 1)
-		printk(KERN_ERR "WARNING: More than 1 IOAPIC!\n");
-
 	new_entry.w1 = 0x402;
 	new_entry.w2 = 0;
 	new_entry.destid_0_7 = destination;
